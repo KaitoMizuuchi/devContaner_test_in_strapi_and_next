@@ -1,0 +1,20 @@
+{
+  "name": "DCcorp",
+  // 上位階層の docker-compose.yaml を指定
+  "dockerComposeFile": "../docker-compose.yaml",
+  // 起動したいサービス (strapi+next コンテナ)
+  "service": "dccorp-dev",
+  // コンテナ内でのワークスペースフォルダ
+  "workspaceFolder": "/workspace",
+  // 停止時のアクション
+  "shutdownAction": "stopCompose",
+  // VSCode 拡張機能のカスタマイズ
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}

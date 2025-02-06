@@ -1,0 +1,111 @@
+version: "3.8"
+
+services:
+  # ------------------------------------------------------------
+  # 1) Strapi + Next.js (DevContainer用)
+  # ------------------------------------------------------------
+  dccorp-dev:
+    container_name: dccorp-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # restart: always → (開発中は optional)
+    env_file:
+      - .env
+    # ホスト(my-project) をコンテナ(/workspace) にマウント
+    volumes:
+      - ./:/workspace
+    ports:
+      - "1337:1337"  # Strapi
+      - "3000:3000"  # Next
+    depends_on:
+      - strapiDB-dev
+      - minio
+    networks:
+      - dccorp
+
+  # ------------------------------------------------------------
+  # 2) PostgreSQL
+  # ------------------------------------------------------------
+  strapiDB-dev:
+    container_name: strapiDB-dev
+    image: postgres:17.2-alpine
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - dccorp-postgres-data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    networks:
+      - dccorp
+
+  # ------------------------------------------------------------
+  # 3) PgAdmin4 (DB GUI)
+  # ------------------------------------------------------------
+  pgadmin4:
+    image: dpage/pgadmin4:8.14
+    container_name: pgadmin4
+    ports:
+      - "8080:80"
+    volumes:
+      - dccorp-pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@example.com"
+      PGADMIN_DEFAULT_PASSWORD: "pgadmin"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    depends_on:
+      - strapiDB-dev
+    networks:
+      - dccorp
+
+  # ------------------------------------------------------------
+  # 4) MinIO (S3互換ストレージ)
+  # ------------------------------------------------------------
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: s3-minio
+    env_file:
+      - .env
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+    command: server --console-address ":9090" /data
+    volumes:
+      - ./minio/data:/data
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    networks:
+      - dccorp
+
+  # MinIO Client (バケット作成用: optional)
+  mc:
+    image: minio/mc
+    container_name: s3-mc
+    env_file:
+      - .env
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set s3-minio http://minio:9000 ${MINIO_USER} ${MINIO_PASSWORD};
+      /usr/bin/mc mb s3-minio/strapi --region=ap-northeast-1;
+      /usr/bin/mc policy set public s3-minio/strapi;
+      exit 0;
+      "
+    networks:
+      - dccorp
+
+volumes:
+  dccorp-postgres-data:
+  dccorp-pgadmin:
+
+networks:
+  dccorp:
+    name: dccorp
+    driver: bridge
