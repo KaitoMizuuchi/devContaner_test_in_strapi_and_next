@@ -16,5 +16,6 @@
         "esbenp.prettier-vscode"
       ]
     }
-  }
+  },
+  "postCreateCommand": "npm run setup"
 }
