@@ -15,5 +15,5 @@
     }
   },
   "remoteUser": "node",
-  "postCreateCommand": "chown -R node:node /workspace/backend/node_modules && chown -R node:node /workspace/frontend/node_modules && npm run setup"
+  "postCreateCommand": "sudo chown -R node:node /workspace/backend /workspace/frontend && npm run setup"
 }
