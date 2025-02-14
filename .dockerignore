@@ -1,0 +1,12 @@
+# Node modules (バックエンド/フロントエンド)
+/backend/node_modules/
+/frontend/node_modules/
+/workspace/backend/node_modules
+/workspace/frontend/node_modules
+
+.git
+.env
+.dockerignore
+Dockerfile
+package-lock.json
+npm-debug.log

@@ -15,11 +15,12 @@ services:
     # ホスト(my-project) をコンテナ(/workspace) にマウント
     volumes:
       - ./:/workspace
-      - /workspace/backend/node_modules
-      - /workspace/frontend/node_modules
+      - dccorp-backend-nm:/workspace/backend/node_modules
+      - dccorp-frontend-nm:/workspace/frontend/node_modules
+    user: "node"
     ports:
-      - "1337:1337"  # Strapi
-      - "3000:3000"  # Next
+      - "1337:1337" # Strapi
+      - "3000:3000" # Next
     depends_on:
       - strapiDB-dev
       - minio
@@ -94,18 +95,16 @@ services:
     depends_on:
       - minio
     entrypoint: >
-      /bin/sh -c "
-      /usr/bin/mc alias set s3-minio http://minio:9000 ${MINIO_USER} ${MINIO_PASSWORD};
-      /usr/bin/mc mb s3-minio/strapi --region=ap-northeast-1;
-      /usr/bin/mc policy set public s3-minio/strapi;
-      exit 0;
-      "
+      /bin/sh -c " /usr/bin/mc alias set s3-minio http://minio:9000 ${MINIO_USER} ${MINIO_PASSWORD}; /usr/bin/mc mb s3-minio/strapi --region=ap-northeast-1; /usr/bin/mc policy set public s3-minio/strapi; exit 0; "
     networks:
       - dccorp
 
 volumes:
   dccorp-postgres-data:
   dccorp-pgadmin:
+  dccorp-backend-nm:
+  dccorp-frontend-nm:
+
 
 networks:
   dccorp:
