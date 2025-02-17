@@ -1,13 +1,13 @@
 #!/bin/sh
 
 # ルートディレクトリの.env作成
-if [ -f .env.example ] && [! -f .env ]; then
+if [ -f .env.example ] && [ ! -f .env ]; then
   cp .env.example .env
   echo ".envファイルを作成しました。"
 fi
 
 # backend/.env作成
-if [ -f backend/.env.example ] && [! -f backend/.env ]; then
+if [ -f backend/.env.example ] && [ ! -f backend/.env ]; then
   cp backend/.env.example backend/.env
   echo "backend/.envを作成しました。"
 
