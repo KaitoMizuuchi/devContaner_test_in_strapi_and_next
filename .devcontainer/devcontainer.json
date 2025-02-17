@@ -11,7 +11,15 @@
   // VSCode 拡張機能のカスタマイズ
   "customizations": {
     "vscode": {
-      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "formulahendry.auto-rename-tag",
+        "dsznajder.es7-react-js-snippets",
+        "streetsidesoftware.code-spell-checker",
+        "christian-kohler.path-intellisense",
+        "stylelint.vscode-stylelint"
+      ]
     }
   },
   "remoteUser": "node",
