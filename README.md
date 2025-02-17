@@ -20,7 +20,8 @@ cd devContaner_test_in_strapi_and_next
 # Dev Containerの起動
 .envファイルの作成
 ```bash
-cp .env.example .env
+chmod +x setup.sh
+./setup.sh
 ```
 VSCodeを開く
 ```bash
